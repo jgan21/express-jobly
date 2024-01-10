@@ -97,9 +97,25 @@ describe("findAll", function () {
 
 //if we pass lowercase c => will return all companies
 
+ /**
+  * {
+  * companyName = "abc"
+  * minEmployees = "int"
+  * maxEmployees = "int"
+  * }
+  *
+  *
+  *
+  */
+
 describe("filter", function(){
   test("filter by similar named companies", async function(){
-    const companies = await Company.filter("c");
+    const filterParams = {
+      companyName: "c",
+      minEmployees: null,
+      maxEmployees: null
+    }
+    const companies = await Company.search(filterParams);
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -126,7 +142,12 @@ describe("filter", function(){
   })
 
   test("filter by minEmployees", async function(){
-    const companies = await Company.filter("2");
+    const filterParams = {
+      companyName: null,
+      minEmployees: 2,
+      maxEmployees: null
+    }
+    const companies = await Company.search(filterParams);
     expect(companies).toEqual([
       {
         handle: "c2",
@@ -146,7 +167,12 @@ describe("filter", function(){
   })
 
   test("filter by maxExployees", async function(){
-    const company = await Company.filter("1");
+    const filterParams = {
+      companyName: null,
+      minEmployees: null,
+      maxEmployees: 1
+    }
+    const company = await Company.search(filterParams);
     expect(company).toEqual([
       {
         handle: "c1",
@@ -156,6 +182,22 @@ describe("filter", function(){
         logoUrl: "http://c1.img",
       }
     ])
+  })
+
+  test(
+    'returns status 400 if minEmployees greater than maxEmployees',function() {
+      const filterParams = {
+        companyName: null,
+        minEmployees: 1,
+        maxEmployees: 3
+      }
+
+      try {
+        Company.search(filterParams);
+        throw new Error("test failed, shouldn't get here");
+      } catch (err) {
+        expect(err instanceof BadRequestError).toBeTruty();
+      }
   })
 });
 
