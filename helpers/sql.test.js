@@ -17,7 +17,7 @@ const { sqlForPartialUpdate } = require('./sql');
 //negative tests
 // throws error if no
 
-describe('testing sqlForPartialUPdate', function() {
+describe('testing sqlForPartialUpdate', function() {
 
   test('keys translate to column names', function() {
     const result = sqlForPartialUpdate(
@@ -41,7 +41,13 @@ describe('testing sqlForPartialUPdate', function() {
   })
 
   test('functioned called without input', function () {
-    const result = sqlForPartialUpdate({},{});
-    expect(result).toThrow(BadRequestError);
+    let error;
+    try {
+      sqlForPartialUpdate({},{});
+    } catch (err) {
+      console.log('*** err', err.stack);
+      error = err.stack;
+    }
+    expect(error).toContain("No data");
   })
 })
