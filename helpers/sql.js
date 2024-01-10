@@ -2,7 +2,24 @@
 
 const { BadRequestError } = require("../expressError");
 
-// THIS NEEDS SOME GREAT DOCUMENTATION.
+/** Takes in dataToUpdate ->
+ * an user object :
+ *  {"firstName" : "Banana", color: "yellow"...}
+ *
+ * and takes in jsToSQL ->
+ * An object with key that is in js camelcase that needs to be changed to
+ * the corresponding database column.
+ *  {
+      firstName: "first_name",
+    }
+ *
+ * Return information from dataToUpdate in a way that can be used in
+ * SQL language's SET clause in an UPDATE statement:
+ *
+ * Returns:
+ *  { setCols : `"first_name"=$1, "color"=$2`,
+ *    values :['Banana', 'yellow']
+ *  } */
 
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   const keys = Object.keys(dataToUpdate);
