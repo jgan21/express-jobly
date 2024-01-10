@@ -85,7 +85,80 @@ describe("findAll", function () {
       },
     ]);
   });
+
+
 });
+
+// if query through name = should return all companies with similar names
+// create another static function
+// in sql = on the WHERE clause, we will use ILIKE %jfakhdgf%
+// if we pass in "2"
+// we will expect to return company with name "C2"
+
+//if we pass lowercase c => will return all companies
+
+describe("filter", function(){
+  test("filter by similar named companies", async function(){
+    const companies = await Company.filter("c");
+    expect(companies).toEqual([
+      {
+        handle: "c1",
+        name: "C1",
+        description: "Desc1",
+        numEmployees: 1,
+        logoUrl: "http://c1.img",
+      },
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      },
+      {
+        handle: "c3",
+        name: "C3",
+        description: "Desc3",
+        numEmployees: 3,
+        logoUrl: "http://c3.img",
+      },
+    ]);
+  })
+
+  test("filter by minEmployees", async function(){
+    const companies = await Company.filter("2");
+    expect(companies).toEqual([
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      },
+      {
+        handle: "c3",
+        name: "C3",
+        description: "Desc3",
+        numEmployees: 3,
+        logoUrl: "http://c3.img",
+      },
+    ])
+  })
+
+  test("filter by maxExployees", async function(){
+    const company = await Company.filter("1");
+    expect(company).toEqual([
+      {
+        handle: "c1",
+        name: "C1",
+        description: "Desc1",
+        numEmployees: 1,
+        logoUrl: "http://c1.img",
+      }
+    ])
+  })
+});
+
 
 /************************************** get */
 
