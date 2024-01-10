@@ -3,19 +3,12 @@
 const { BadRequestError } = require("../expressError");
 const { sqlForPartialUpdate } = require('./sql');
 
-
-
 // positive test
 // firstName, lastName, isAdmin, email -> first_name, last_name, is_admin, email
 //'"first_name"=$1, "last_name"=$2, "email"=$3, "is_admin"=$4'
-//
-// test -> camel case turns to column name
-// firstName = first_name, lastName = last_name, isAdmin = is_admin
-// test ->
-//
 
 //negative tests
-// throws error if no
+// throws error if there is no input
 
 describe('testing sqlForPartialUpdate', function() {
 
