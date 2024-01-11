@@ -112,8 +112,8 @@ describe("search", function(){
   test("search by similar named companies", async function(){
     const filterParams = {
       companyName: "c",
-      minEmployees: null,
-      maxEmployees: null
+      // minEmployees: null,
+      // maxEmployees: null
     }
     const companies = await Company.search(filterParams);
     expect(companies).toEqual([
@@ -143,9 +143,9 @@ describe("search", function(){
 
   test("search by minEmployees", async function(){
     const filterParams = {
-      companyName: null,
+      // companyName: null,
       minEmployees: 2,
-      maxEmployees: null
+      // maxEmployees: null
     }
     const companies = await Company.search(filterParams);
     expect(companies).toEqual([
@@ -168,8 +168,8 @@ describe("search", function(){
 
   test("search by maxExployees", async function(){
     const filterParams = {
-      companyName: null,
-      minEmployees: null,
+      // companyName: null,
+      // minEmployees: null,
       maxEmployees: 1
     }
     const company = await Company.search(filterParams);
@@ -185,18 +185,19 @@ describe("search", function(){
   })
 
   test(
-    'returns status 400 if minEmployees greater than maxEmployees',function() {
+    'returns status 400 if minEmployees greater than maxEmployees',async function() {
       const filterParams = {
-        companyName: null,
-        minEmployees: 1,
+        // companyName: null,
+        minEmployees: 5,
         maxEmployees: 3
       }
 
       try {
-        Company.search(filterParams);
-        throw new Error("test failed, shouldn't get here");
+        await Company.search(filterParams);
+        expect(true).toEqual(false);
       } catch (err) {
-        expect(err instanceof BadRequestError).toBeTruthy();
+        console.log("****** error", err)
+        expect(err instanceof BadRequestError).toEqual(true);
       }
   })
 });
