@@ -36,4 +36,27 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-module.exports = { sqlForPartialUpdate };
+
+function sqlForWhereClause(filterParams, jsToSql) {
+
+  const keys = Object.keys(filterParams);
+    let clause = keys.map((whereName, idx) =>
+    `${jsToSql[whereName] || whereName} $${idx + 1}`,
+  );
+
+    clause = "WHERE " + clause.join(" AND ");
+    let values = Object.values(filterParams);
+
+    for (let i = 0; i < values.length; i++){
+      if (typeof(values[i]) === "string"){
+        values[i] = `%${values[i]}%`
+      }
+    }
+
+    return {clause, values};
+}
+
+
+
+
+module.exports = { sqlForPartialUpdate, sqlForWhereClause};

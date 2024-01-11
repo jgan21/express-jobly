@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForWhereClause} = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -78,29 +78,14 @@ class Company {
     if (filterParams.minEmployees >= filterParams.maxEmployees) {
       throw new BadRequestError("max employees cannot be lesser than min employees");
   }
-  //TODO: Refactor into separate helper function after code review.
 
     const jsToSql= {
       companyName : "name ILIKE",
       minEmployees : "num_employees >=",
       maxEmployees : "num_employees <="}
 
-    const keys = Object.keys(filterParams);
-    let clause = keys.map((whereName, idx) =>
-    `${jsToSql[whereName] || whereName} $${idx + 1}`,
-  );
+    const whereClause = sqlForWhereClause(filterParams,jsToSql);
 
-    clause = "WHERE " + clause.join(" AND ");
-    const values = Object.values(filterParams);
-
-    for (let i = 0; i < values.length; i++){
-      if (typeof(values[i]) === "string"){
-        values[i] = `%${values[i]}%`
-      }
-    }
-
-    console.log("clause=", clause)
-    console.log("values=", values)
 
     const companiesRes = await db.query(
       `SELECT handle,
@@ -109,8 +94,8 @@ class Company {
               num_employees AS "numEmployees",
               logo_url AS "logoUrl"
             FROM companies
-            ${clause}
-            ORDER BY name`, [...values]);
+            ${whereClause.clause}
+            ORDER BY name`, [...whereClause.values]);
 
     return companiesRes.rows;
   }
