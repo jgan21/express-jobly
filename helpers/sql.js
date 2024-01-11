@@ -36,6 +36,12 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
+/**
+ * takes in object of filter params such as companyName, minEmployees,
+ * maxEmployees, as well as obj of keys: js, values: sql columns
+ *  returns object of clause: sql where clause,
+ *  values: array of search criteria
+ */
 
 function sqlForWhereClause(filterParams, jsToSql) {
 
