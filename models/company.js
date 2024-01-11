@@ -67,10 +67,31 @@ class Company {
     return companiesRes.rows;
   }
 
+  /**
+   *
+   * takes an object {company name, minEmployees, maxEmployees}
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   */
+
   static async search(filterParams) {
     const name = filterParams.companyName || "";
-    const minEmployees = filterParams.minEmployees || 0;
-    const maxEmployees = filterParams.maxEmployees || Infinity;
+    const minEmployees = filterParams.minEmployees;
+    const maxEmployees = filterParams.maxEmployees;
+    const queryParams = [];
+
+
+    if(filterParams.name) {
+      queryParams.push(`name = ${filterParams.name}`)
+    }
+    if(filterParams.minEmployees) {
+      queryParams.push(`num_employees >= ${filterParams.minEmployees}`)
+    }
+    if(filterParams.maxEmployees) {
+      queryParams.push(`num_employees <= ${filterParams.maxEmployees}`)
+    }
+
+
+
 
     const companiesRes = await db.query(
     `SELECT handle,
@@ -83,7 +104,9 @@ class Company {
             ORDER BY name`,
             [`'%${name}%'`, `${minEmployees}`, `${maxEmployees}`]);
 
+    return companiesRes.rows;
   }
+
   /** Given a company handle, return data about company.
    *
    * Returns { handle, name, description, numEmployees, logoUrl, jobs }
