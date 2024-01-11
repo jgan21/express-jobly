@@ -83,9 +83,11 @@ class Company {
     const maxEmployees = filterParams["maxEmployees"];
     console.log("maxEmployees=", maxEmployees);
 
-    if (minEmployees > maxEmployees) {
+
+    if (minEmployees >= maxEmployees) {
       throw new BadRequestError("max employees cannot be lesser than min employees");
     }
+
     const queryParams = [];
 
     if (filterParams.companyName) {
@@ -107,6 +109,7 @@ class Company {
 
     console.log("finalWhereClause=", finalWhereClause);
 
+
     const companiesRes = await db.query(
       `SELECT handle,
               name,
@@ -114,9 +117,8 @@ class Company {
               num_employees AS "numEmployees",
               logo_url AS "logoUrl"
             FROM companies
-            $1
-            ORDER BY name`,
-      [finalWhereClause]);
+            ${finalWhereClause}
+            ORDER BY name`);
 
     console.log("companiesRes=", companiesRes.rows);
 

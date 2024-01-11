@@ -108,8 +108,8 @@ describe("findAll", function () {
   *
   */
 
-describe("filter", function(){
-  test("filter by similar named companies", async function(){
+describe("search", function(){
+  test("search by similar named companies", async function(){
     const filterParams = {
       companyName: "c",
       minEmployees: null,
@@ -141,7 +141,7 @@ describe("filter", function(){
     ]);
   })
 
-  test("filter by minEmployees", async function(){
+  test("search by minEmployees", async function(){
     const filterParams = {
       companyName: null,
       minEmployees: 2,
@@ -166,7 +166,7 @@ describe("filter", function(){
     ])
   })
 
-  test("filter by maxExployees", async function(){
+  test("search by maxExployees", async function(){
     const filterParams = {
       companyName: null,
       minEmployees: null,
