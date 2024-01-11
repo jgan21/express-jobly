@@ -196,7 +196,7 @@ describe("filter", function(){
         Company.search(filterParams);
         throw new Error("test failed, shouldn't get here");
       } catch (err) {
-        expect(err instanceof BadRequestError).toBeTruty();
+        expect(err instanceof BadRequestError).toBeTruthy();
       }
   })
 });

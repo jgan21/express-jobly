@@ -38,12 +38,12 @@ class Company {
                     description,
                     num_employees AS "numEmployees",
                     logo_url AS "logoUrl"`, [
-          handle,
-          name,
-          description,
-          numEmployees,
-          logoUrl,
-        ],
+      handle,
+      name,
+      description,
+      numEmployees,
+      logoUrl,
+    ],
     );
     const company = result.rows[0];
 
@@ -74,35 +74,51 @@ class Company {
    */
 
   static async search(filterParams) {
-    const name = filterParams.companyName || "";
-    const minEmployees = filterParams.minEmployees;
-    const maxEmployees = filterParams.maxEmployees;
+
+    const name = filterParams["companyName"];
+    console.log("name=", name);
+
+    const minEmployees = filterParams["minEmployees"];
+    console.log("minEmployees=", minEmployees);
+    const maxEmployees = filterParams["maxEmployees"];
+    console.log("maxEmployees=", maxEmployees);
+
+    if (minEmployees > maxEmployees) {
+      throw new BadRequestError("max employees cannot be lesser than min employees");
+    }
     const queryParams = [];
 
-
-    if(filterParams.name) {
-      queryParams.push(`name = ${filterParams.name}`)
+    if (filterParams.companyName) {
+      queryParams.push(`name ILIKE '%${name}%'`);
     }
-    if(filterParams.minEmployees) {
-      queryParams.push(`num_employees >= ${filterParams.minEmployees}`)
+    if (filterParams.minEmployees) {
+      queryParams.push(`num_employees >= ${minEmployees}`);
     }
-    if(filterParams.maxEmployees) {
-      queryParams.push(`num_employees <= ${filterParams.maxEmployees}`)
+    if (filterParams.maxEmployees) {
+      queryParams.push(`num_employees <= ${maxEmployees}`);
     }
 
+    let finalWhereClause;
+    if (queryParams.length > 0) {
+      finalWhereClause = "WHERE " + queryParams.join(" AND ");
+    } else {
+      finalWhereClause = "";
+    }
 
-
+    console.log("finalWhereClause=", finalWhereClause);
 
     const companiesRes = await db.query(
-    `SELECT handle,
-            name,
-            description,
-            num_employees AS "numEmployees",
-            logo_url AS "logoUrl"
+      `SELECT handle,
+              name,
+              description,
+              num_employees AS "numEmployees",
+              logo_url AS "logoUrl"
             FROM companies
-            WHERE name ILIKE $1 AND num_employees >= $2 AND num_employees <= $3
+            $1
             ORDER BY name`,
-            [`'%${name}%'`, `${minEmployees}`, `${maxEmployees}`]);
+      [finalWhereClause]);
+
+    console.log("companiesRes=", companiesRes.rows);
 
     return companiesRes.rows;
   }
@@ -146,11 +162,11 @@ class Company {
 
   static async update(handle, data) {
     const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          numEmployees: "num_employees",
-          logoUrl: "logo_url",
-        });
+      data,
+      {
+        numEmployees: "num_employees",
+        logoUrl: "logo_url",
+      });
     const handleVarIdx = "$" + (values.length + 1);
 
     const querySql = `
