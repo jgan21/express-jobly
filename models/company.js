@@ -67,25 +67,25 @@ class Company {
     return companiesRes.rows;
   }
 
-  // /**
-  //  *
-  //  * takes an object {company name, minEmployees, maxEmployees}
-  //  * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
-  //  */
+  /** Filter for specific companies through :
+   *  nameLike, minEmployees, maxEmployees
+   *
+   * Takes an object {nameLike, minEmployees, maxEmployees}
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   */
 
-  static async search(filterParams){
+  static async filterCompanies(filterParams){
 
     if (filterParams.minEmployees >= filterParams.maxEmployees) {
       throw new BadRequestError("max employees cannot be lesser than min employees");
   }
 
     const jsToSql= {
-      companyName : "name ILIKE",
+      nameLike : "name ILIKE",
       minEmployees : "num_employees >=",
       maxEmployees : "num_employees <="}
 
     const whereClause = sqlForWhereClause(filterParams,jsToSql);
-
 
     const companiesRes = await db.query(
       `SELECT handle,

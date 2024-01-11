@@ -108,12 +108,12 @@ describe("findAll", function () {
   *
   */
 
-describe("search", function(){
-  test("search by similar named companies", async function(){
+describe("filterCompanies", function(){
+  test("filter by similar named companies", async function(){
     const filterParams = {
-      companyName: "c",
+      nameLike: "c",
     }
-    const companies = await Company.search(filterParams);
+    const companies = await Company.filterCompanies(filterParams);
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -139,11 +139,11 @@ describe("search", function(){
     ]);
   })
 
-  test("search by minEmployees", async function(){
+  test("filter by minEmployees", async function(){
     const filterParams = {
       minEmployees: 2,
     }
-    const companies = await Company.search(filterParams);
+    const companies = await Company.filterCompanies(filterParams);
     expect(companies).toEqual([
       {
         handle: "c2",
@@ -162,11 +162,11 @@ describe("search", function(){
     ])
   })
 
-  test("search by maxExployees", async function(){
+  test("Filter by maxExployees", async function(){
     const filterParams = {
       maxEmployees: 1
     }
-    const company = await Company.search(filterParams);
+    const company = await Company.filterCompanies(filterParams);
     expect(company).toEqual([
       {
         handle: "c1",
@@ -186,7 +186,7 @@ describe("search", function(){
       }
 
       try {
-        await Company.search(filterParams);
+        await Company.filterCompanies(filterParams);
         expect(true).toEqual(false);
       } catch (err) {
         console.log("****** error", err)

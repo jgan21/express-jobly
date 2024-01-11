@@ -95,7 +95,68 @@ describe("GET /companies", function () {
           ],
     });
   });
+
+  test("filter with similar named companies, minEmployees and maxEmployees",
+  async function() {
+    const resp = await request(app)
+        .get("/companies")
+        .send({ nameLike : "c", minEmployees: 2, maxEmployees: 3 });
+    expect(resp.body).toEqual({
+      companies: [
+        {
+          handle: "c2",
+          name: "C2",
+          description: "Desc2",
+          numEmployees: 2,
+          logoUrl: "http://c2.img",
+        },
+        {
+          handle: "c3",
+          name: "C3",
+          description: "Desc3",
+          numEmployees: 3,
+          logoUrl: "http://c3.img",
+        },
+      ],
+    })
+  });
+
+  test("filter with minEmployees and maxEmployees", async function() {
+    const resp = await request(app)
+        .get("/companies")
+        .send({ minEmployees: 2, maxEmployees: 3});
+    expect(resp.body).toEqual({
+      companies: [
+        {
+          handle: "c2",
+          name: "C2",
+          description: "Desc2",
+          numEmployees: 2,
+          logoUrl: "http://c2.img",
+        },
+        {
+          handle: "c3",
+          name: "C3",
+          description: "Desc3",
+          numEmployees: 3,
+          logoUrl: "http://c3.img",
+        },
+      ]
+    })
+  });
+
+  test("filter for invalid maxEmployees", async function() {
+    const resp = await request(app)
+        .get("/companies")
+        .send({ maxEmployees: "hello"});
+    expect(resp.status).toEqual(400)
+  });
+
 });
+
+//fail : status 500 if max is less than min
+//positive filter : if filter by name we get the companies we want
+
 
 /************************************** GET /companies/:handle */
 
