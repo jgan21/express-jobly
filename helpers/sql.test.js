@@ -48,24 +48,19 @@ describe('testing sqlForPartialUpdate', function () {
 describe('testing sqlForWhereClause', function () {
 
   test('turns search params into WHERE clause', function () {
-    const jsToSql = {
+    const result = sqlForWhereClause(
+      {
+        "minEmployees": "234",
+        "maxEmployees": "300"
+      }, {
       companyName: "name ILIKE",
       minEmployees: "num_employees >=",
       maxEmployees: "num_employees <="
-    };
+    });
 
-    const searchParams = {
-      "minEmployees": "234",
-      "maxEmployees": "300"
-    };
-
-
-    const result = sqlForWhereClause(searchParams, jsToSql);
-
-    expect(Object.values(result)[0]).toContain(
-      "num_employees >= $1 AND num_employees <= $2"
+    expect(result.clause).toContain(
+      "WHERE num_employees >= $1 AND num_employees <= $2"
     );
-
   });
-})
+});
 
