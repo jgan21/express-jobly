@@ -55,17 +55,17 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  // static async findAll() {
-  //   const companiesRes = await db.query(`
-  //       SELECT handle,
-  //              name,
-  //              description,
-  //              num_employees AS "numEmployees",
-  //              logo_url      AS "logoUrl"
-  //       FROM companies
-  //       ORDER BY name`);
-  //   return companiesRes.rows;
-  // }
+  static async findAll() {
+    const companiesRes = await db.query(`
+        SELECT handle,
+               name,
+               description,
+               num_employees AS "numEmployees",
+               logo_url      AS "logoUrl"
+        FROM companies
+        ORDER BY name`);
+    return companiesRes.rows;
+  }
 
   // /**
   //  *
@@ -73,62 +73,12 @@ class Company {
   //  * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
   //  */
 
-  // static async search(filterParams) {
-
-  //   const name = filterParams["companyName"];
-  //   console.log("name=", name);
-  //   const minEmployees = filterParams["minEmployees"];
-  //   console.log("minEmployees=", minEmployees);
-  //   const maxEmployees = filterParams["maxEmployees"];
-  //   console.log("maxEmployees=", maxEmployees);
-
-
-  //   if (minEmployees >= maxEmployees) {
-  //     throw new BadRequestError("max employees cannot be lesser than min employees");
-  //   }
-
-  //   const queryParams = [];
-
-  //   if (filterParams.companyName) {
-  //     queryParams.push(`name ILIKE '%${name}%'`);
-  //   }
-  //   if (filterParams.minEmployees) {
-  //     queryParams.push(`num_employees >= ${minEmployees}`);
-  //   }
-  //   if (filterParams.maxEmployees) {
-  //     queryParams.push(`num_employees <= ${maxEmployees}`);
-  //   }
-
-  //   let finalWhereClause;
-  //   if (queryParams.length > 0) {
-  //     finalWhereClause = "WHERE " + queryParams.join(" AND ");
-  //   } else {
-  //     finalWhereClause = "";
-  //   }
-
-  //   console.log("finalWhereClause=", finalWhereClause);
-
-  //   const companiesRes = await db.query(
-  //     `SELECT handle,
-  //             name,
-  //             description,
-  //             num_employees AS "numEmployees",
-  //             logo_url AS "logoUrl"
-  //           FROM companies
-  //           ${finalWhereClause}
-  //           ORDER BY name`);
-
-  //   console.log("companiesRes=", companiesRes.rows);
-
-  //   return companiesRes.rows;
-  // }
-
   static async search(filterParams){
-    console.log("filterParams.min and max=", filterParams.minEmployees, filterParams.maxEmployees)
 
     if (filterParams.minEmployees >= filterParams.maxEmployees) {
       throw new BadRequestError("max employees cannot be lesser than min employees");
   }
+  //TODO: Refactor into separate helper function after code review.
 
     const jsToSql= {
       companyName : "name ILIKE",
@@ -161,8 +111,6 @@ class Company {
             FROM companies
             ${clause}
             ORDER BY name`, [...values]);
-
-    console.log("companiesRes=", companiesRes.rows);
 
     return companiesRes.rows;
   }

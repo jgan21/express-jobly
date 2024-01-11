@@ -112,8 +112,6 @@ describe("search", function(){
   test("search by similar named companies", async function(){
     const filterParams = {
       companyName: "c",
-      // minEmployees: null,
-      // maxEmployees: null
     }
     const companies = await Company.search(filterParams);
     expect(companies).toEqual([
@@ -143,9 +141,7 @@ describe("search", function(){
 
   test("search by minEmployees", async function(){
     const filterParams = {
-      // companyName: null,
       minEmployees: 2,
-      // maxEmployees: null
     }
     const companies = await Company.search(filterParams);
     expect(companies).toEqual([
@@ -168,8 +164,6 @@ describe("search", function(){
 
   test("search by maxExployees", async function(){
     const filterParams = {
-      // companyName: null,
-      // minEmployees: null,
       maxEmployees: 1
     }
     const company = await Company.search(filterParams);
@@ -187,7 +181,6 @@ describe("search", function(){
   test(
     'returns status 400 if minEmployees greater than maxEmployees',async function() {
       const filterParams = {
-        // companyName: null,
         minEmployees: 5,
         maxEmployees: 3
       }
