@@ -54,29 +54,30 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
   let companies;
 
-  if (req.query === undefined) {
-    const companies = await Company.findAll();
-    return res.json({ companies });
+  if (Object.keys(req.query).length > 0) {
+
+    const searchTerms = req.query;
+
+    if (searchTerms.minEmployees !== undefined) {
+      searchTerms.minEmployees = Number(searchTerms.minEmployees);
+    }
+    if (searchTerms.maxEmployees !== undefined) {
+      searchTerms.maxEmployees = Number(searchTerms.maxEmployees);
+    }
+
+    console.log("what is typeof= ", searchTerms.minEmployees);
+
+    const validator = jsonschema.validate(
+      searchTerms, companySearchSchema, { require: true });
+    if (!validator.valid) {
+      const errs = validator.errors.map(err => err.stack);
+      throw new BadRequestError(errs);
+    }
+    companies = await Company.filterCompanies(searchTerms);
   }
-
-  const searchTerms = req.query;
-
-  if (!(searchTerms.minEmployees in req.query)) {
-    searchTerms.minEmployees = Number(searchTerms.minEmployees);
+  else {
+    companies = await Company.findAll();
   }
-  if (!(searchTerms.maxEmployees in req.query)) {
-    searchTerms.maxEmployees = Number(searchTerms.maxEmployees);
-  }
-  console.log("what istypeof= ", req.query.minEmployees);
-  const validator = jsonschema.validate(
-    searchTerms, companySearchSchema, { require: true });
-  // if (!validator.valid) {
-  //   const errs = validator.errors.map(err => err.stack);
-  //   throw new BadRequestError(errs);
-  // }
-
- companies = await Company.filterCompanies(searchTerms);
-
   return res.json({ companies });
 });
 
