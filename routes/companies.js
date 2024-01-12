@@ -54,53 +54,31 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
   let companies;
 
-  //   if (req.body !== undefined) {
-  //     const request = req.body; //FIXME: change request name.
-
-  //     if (request.minEmployees !== undefined) { //FIXME: if minEmployee is not in the body
-  //       request.minEmployees = Number(request.minEmployees);
-  //     }
-  //     if (request.maxEmployees !== undefined) {
-  //       request.maxEmployees = Number(request.maxEmployees);
-  //     }
-  //     console.log("typeof= ", typeof req.body.minEmployees)
-  //     const validator = jsonschema.validate(
-  //       request, companySearchSchema, { require: true });
-  //     if (!validator.valid) {
-  //       const errs = validator.errors.map(err => err.stack);
-  //       throw new BadRequestError(errs);
-  //     }
-  //     companies = await Company.filterCompanies(request);
-  //   } else {
-  //     companies = await Company.findAll();
-  //   }
-
-  //   return res.json({ companies });
-  // });
-
-  if (req.body === undefined) {
+  if (req.query === undefined) {
     const companies = await Company.findAll();
     return res.json({ companies });
   }
 
-  const request = req.body; //FIXME: change request name.
+  const searchTerms = req.query;
 
-  if (request.minEmployees !== undefined) { //FIXME: if minEmployee is not in the body
-    request.minEmployees = Number(request.minEmployees);
+  if (!(searchTerms.minEmployees in req.query)) {
+    searchTerms.minEmployees = Number(searchTerms.minEmployees);
   }
-  if (request.maxEmployees !== undefined) {
-    request.maxEmployees = Number(request.maxEmployees);
+  if (!(searchTerms.maxEmployees in req.query)) {
+    searchTerms.maxEmployees = Number(searchTerms.maxEmployees);
   }
-  console.log("typeof= ", typeof req.body.minEmployees);
+  console.log("what istypeof= ", req.query.minEmployees);
   const validator = jsonschema.validate(
-    request, companySearchSchema, { require: true });
-  if (!validator.valid) {
-    const errs = validator.errors.map(err => err.stack);
-    throw new BadRequestError(errs);
-  }
+    searchTerms, companySearchSchema, { require: true });
+  // if (!validator.valid) {
+  //   const errs = validator.errors.map(err => err.stack);
+  //   throw new BadRequestError(errs);
+  // }
 
-  return await Company.filterCompanies(request); //FIXME: return json
-}
+ companies = await Company.filterCompanies(searchTerms);
+
+  return res.json({ companies });
+});
 
 
 /** GET /[handle]  =>  { company }

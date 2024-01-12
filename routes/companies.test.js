@@ -100,7 +100,7 @@ describe("GET /companies", function () {
   async function() {
     const resp = await request(app)
         .get("/companies")
-        .send({ nameLike : "c", minEmployees: 2, maxEmployees: 3 }); //FIXME: QUERY
+        .query({ nameLike : "c", minEmployees: 2, maxEmployees: 3 });
     expect(resp.body).toEqual({
       companies: [
         {
@@ -124,7 +124,7 @@ describe("GET /companies", function () {
   test("filter with minEmployees and maxEmployees", async function() {
     const resp = await request(app)
         .get("/companies")
-        .send({ minEmployees: 2, maxEmployees: 3});
+        .query({ minEmployees: 2, maxEmployees: 3});
     expect(resp.body).toEqual({
       companies: [
         {
@@ -148,7 +148,7 @@ describe("GET /companies", function () {
   test("filter for invalid maxEmployees", async function() {
     const resp = await request(app)
         .get("/companies")
-        .send({ maxEmployees: "hello"});
+        .query({ maxEmployees: "hello"});
     expect(resp.status).toEqual(400)
   });
 

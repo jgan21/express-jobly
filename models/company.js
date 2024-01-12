@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForWhereClause} = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForWhereClause } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -74,26 +74,25 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    */
 
-  static async filterCompanies(filterParams){
+  static async filterCompanies(filterParams) {
 
-    //TODO: if its not a number, throw an error
-    //or turn everything to numbers
-
-    if (filterParams.minEmployees >= filterParams.maxEmployees) {
+    if (
+      Number(filterParams.minEmployees) >= Number(filterParams.maxEmployees)
+      ) {
       throw new BadRequestError(
         "max employees cannot be lesser than min employees"
       );
     }
 
-    const jsToSql= {
-      nameLike : "name ILIKE",
-      minEmployees : "num_employees >=",
-      maxEmployees : "num_employees <="
+    const jsToSql = {
+      nameLike: "name ILIKE",
+      minEmployees: "num_employees >=",
+      maxEmployees: "num_employees <="
     };
 
-    delete filterParams.nameLike
+    delete filterParams.nameLike;
 
-    const whereClause = sqlForWhereClause(filterParams,jsToSql);
+    const whereClause = sqlForWhereClause(filterParams, jsToSql);
 
     const companiesRes = await db.query(
       `SELECT handle,
