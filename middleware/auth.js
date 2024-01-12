@@ -40,12 +40,27 @@ function ensureLoggedIn(req, res, next) {
   throw new UnauthorizedError();
 }
 
+/** Middleware to use when admin is logged in.
+ *
+ * If not, raises Unauthorized.
+ */
+
 function isAdmin(req, res, next) {
   if (res.locals.user?.username && res.locals.user?.isAdmin === true) {
     return next();
   }
 
   throw new UnauthorizedError("You are not an admin.")
+}
+
+
+/** Middleware to use when user or admin is logged in.
+ *
+ * If not, raises Unauthorized.
+ */
+
+function userOrAdmin(req, res, next) {
+
 }
 
 
