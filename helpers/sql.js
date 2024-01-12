@@ -66,6 +66,4 @@ function sqlForWhereClause(filterParams, jsToSql) {
 }
 
 
-
-
 module.exports = { sqlForPartialUpdate, sqlForWhereClause };
