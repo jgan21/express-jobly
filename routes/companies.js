@@ -76,6 +76,7 @@ router.get("/", async function (req, res, next) {
     companies = await Company.filterCompanies(searchTerms);
   }
   else {
+
     companies = await Company.findAll();
   }
   return res.json({ companies });
