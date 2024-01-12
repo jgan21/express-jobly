@@ -50,17 +50,24 @@ describe('testing sqlForWhereClause', function () {
   test('turns search params into WHERE clause', function () {
     const result = sqlForWhereClause(
       {
-        "minEmployees": "234",
-        "maxEmployees": "300"
+        "minEmployees": 234,
+        "maxEmployees": 300
       }, {
-      companyName: "name ILIKE",
-      minEmployees: "num_employees >=",
-      maxEmployees: "num_employees <="
+        companyName: "name ILIKE",
+        minEmployees: "num_employees >=",
+        maxEmployees: "num_employees <="
     });
 
     expect(result.clause).toContain(
       "WHERE num_employees >= $1 AND num_employees <= $2"
     );
   });
+
+  //FIXME: test the whole result
+  //test the string that needs to be 'LIKE'
+  //test the string that does not need to 'LIKE'
 });
 
+    // FIXME:companyName: ["name ILIKE", "like"],
+      // FIXME: minEmployees: ["num_employees >=", "number"],
+      // FIXME: maxEmployees: ["num_employees <=", "number"]

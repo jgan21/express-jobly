@@ -76,14 +76,22 @@ class Company {
 
   static async filterCompanies(filterParams){
 
+    //TODO: if its not a number, throw an error
+    //or turn everything to numbers
+
     if (filterParams.minEmployees >= filterParams.maxEmployees) {
-      throw new BadRequestError("max employees cannot be lesser than min employees");
-  }
+      throw new BadRequestError(
+        "max employees cannot be lesser than min employees"
+      );
+    }
 
     const jsToSql= {
       nameLike : "name ILIKE",
       minEmployees : "num_employees >=",
-      maxEmployees : "num_employees <="}
+      maxEmployees : "num_employees <="
+    };
+
+    delete filterParams.nameLike
 
     const whereClause = sqlForWhereClause(filterParams,jsToSql);
 

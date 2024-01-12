@@ -54,27 +54,54 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
   let companies;
 
-  if (req.body !== undefined) {
-    const request = req.body;
+  //   if (req.body !== undefined) {
+  //     const request = req.body; //FIXME: change request name.
 
-    if (request.minEmployees !== undefined) {
-      request.minEmployees = Number(request.minEmployees);
-    }
-    if (request.maxEmployees !== undefined) {
-      request.maxEmployees = Number(request.maxEmployees);
-    }
-    const validator = jsonschema.validate(request, companySearchSchema, { require: true });
-    if (!validator.valid) {
-      const errs = validator.errors.map(err => err.stack);
-      throw new BadRequestError(errs);
-    }
-    companies = await Company.filterCompanies(request);
-  } else {
-    companies = await Company.findAll();
+  //     if (request.minEmployees !== undefined) { //FIXME: if minEmployee is not in the body
+  //       request.minEmployees = Number(request.minEmployees);
+  //     }
+  //     if (request.maxEmployees !== undefined) {
+  //       request.maxEmployees = Number(request.maxEmployees);
+  //     }
+  //     console.log("typeof= ", typeof req.body.minEmployees)
+  //     const validator = jsonschema.validate(
+  //       request, companySearchSchema, { require: true });
+  //     if (!validator.valid) {
+  //       const errs = validator.errors.map(err => err.stack);
+  //       throw new BadRequestError(errs);
+  //     }
+  //     companies = await Company.filterCompanies(request);
+  //   } else {
+  //     companies = await Company.findAll();
+  //   }
+
+  //   return res.json({ companies });
+  // });
+
+  if (req.body === undefined) {
+    const companies = await Company.findAll();
+    return res.json({ companies });
   }
 
-  return res.json({ companies });
-});
+  const request = req.body; //FIXME: change request name.
+
+  if (request.minEmployees !== undefined) { //FIXME: if minEmployee is not in the body
+    request.minEmployees = Number(request.minEmployees);
+  }
+  if (request.maxEmployees !== undefined) {
+    request.maxEmployees = Number(request.maxEmployees);
+  }
+  console.log("typeof= ", typeof req.body.minEmployees);
+  const validator = jsonschema.validate(
+    request, companySearchSchema, { require: true });
+  if (!validator.valid) {
+    const errs = validator.errors.map(err => err.stack);
+    throw new BadRequestError(errs);
+  }
+
+  return await Company.filterCompanies(request); //FIXME: return json
+}
+
 
 /** GET /[handle]  =>  { company }
  *

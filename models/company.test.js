@@ -111,7 +111,7 @@ describe("findAll", function () {
 describe("filterCompanies", function(){
   test("filter by similar named companies", async function(){
     const filterParams = {
-      nameLike: "c",
+      nameLike: "c", //FIXME: check should be more specific
     }
     const companies = await Company.filterCompanies(filterParams);
     expect(companies).toEqual([

@@ -100,7 +100,7 @@ describe("GET /companies", function () {
   async function() {
     const resp = await request(app)
         .get("/companies")
-        .send({ nameLike : "c", minEmployees: 2, maxEmployees: 3 });
+        .send({ nameLike : "c", minEmployees: 2, maxEmployees: 3 }); //FIXME: QUERY
     expect(resp.body).toEqual({
       companies: [
         {
