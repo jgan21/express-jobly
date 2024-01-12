@@ -90,8 +90,6 @@ class Company {
       maxEmployees: "num_employees <="
     };
 
-    delete filterParams.nameLike;
-
     const whereClause = sqlForWhereClause(filterParams, jsToSql);
     console.log("whereClause=", whereClause)
     const companiesRes = await db.query(
