@@ -63,7 +63,7 @@ function ensureUserOrAdmin(req, res, next) {
   const userPath = req.params.username;
   const loggedInUser = res.locals.user?.username;
 
-  if (userPath === loggedInUser || loggedInUser.isAdmin === true) {
+  if (userPath === loggedInUser || loggedInUser?.isAdmin === true) {
     return next();
   }
 

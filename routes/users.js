@@ -80,7 +80,7 @@ router.get("/:username",  ensureUserOrAdmin, async function (req, res, next) {
  * Authorization required: login
  **/
 
-router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
+router.patch("/:username", ensureUserOrAdmin, async function (req, res, next) {
   const validator = jsonschema.validate(
       req.body,
       userUpdateSchema,
@@ -101,7 +101,7 @@ router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
  * Authorization required: login
  **/
 
-router.delete("/:username", ensureLoggedIn, async function (req, res, next) {
+router.delete("/:username", ensureUserOrAdmin, async function (req, res, next) {
   await User.remove(req.params.username);
   return res.json({ deleted: req.params.username });
 });
